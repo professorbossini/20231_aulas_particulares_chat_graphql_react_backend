@@ -71,12 +71,17 @@ const schema = createSchema({
     type Query{
       hello: String!
       ambientes: [Ambiente!]!
+      existe (nome: String!, senha: String!): Usuario
     }
   `,
   resolvers: {
     Query: {
       hello: () => "Hello, GraphQL!",
-      ambientes: () => ambientes
+      ambientes: () => ambientes,
+      existe: (parent, args, context, info) => {
+        const { nome, senha } = args
+        return usuarios.find(u => u.nome === nome && u.senha === senha)
+      }
     },
     Ambiente: {
       usuarios: (parent, args, context, info) => {
@@ -86,6 +91,14 @@ const schema = createSchema({
       mensagens: (parent, args, context, info) => {
         return mensagens.filter(m => m.ambiente === parent.id)  
       }  
+    },
+    Usuario: {
+      mensagens: (parent, args, context, info) => {
+
+      },
+      ambientes: (parent, args, context, info) => {
+        
+      }
     }
   }
 })
